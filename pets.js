@@ -1,13 +1,12 @@
-import { write } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 
 const subcommand = process.argv[2];
-const petIndex = process.argv[3];
 
 if(subcommand === "read"){
     
   readFile("./pets.json", "utf-8").then(text => {
     const pets = JSON.parse(text);
+    const petIndex = process.argv[3];
     if(petIndex === undefined || petIndex >= pets.length){
         console.error("Usage: node pets.js read INDEX");
         process.exit(1);        
@@ -16,16 +15,35 @@ if(subcommand === "read"){
     }
   })
 } else if(subcommand === "create"){
-    const age = process.argv[3];
-    const name = process.argv[4];
+    const age = Number(process.argv[3]);
     const kind = process.argv[5];
-    const pet = {age, name, kind};
+    const name = process.argv[4];
+    const pet = {age, kind, name};
     readFile("./pets.json", "utf-8").then(text => {
         const pets = JSON.parse(text);
         pets.push(pet);
         return writeFile("./pets.json", JSON.stringify(pets));
-}).catch((err) => {
-    console.log("Error");
-
 })
+
+} else if(subcommand === "update"){
+    const newIndex = process.argv[3];
+    const age = Number(process.argv[4]);
+    const kind = process.argv[5];
+    const name = process.argv[6];
+    const newPet = {age, kind, name};
+    readFile("./pets.json", "utf-8").then(text => {
+        const pets = JSON.parse(text);
+        //console.log(pets);
+        pets[newIndex] = newPet;
+        return writeFile("./pets.json", JSON.stringify(pets));
+
+    });
 }
+
+// $ node pets.js update 1 9 cat
+// Usage: node pets.js update INDEX AGE KIND NAME
+
+// .catch((err) => {
+//     console.log("Error");
+
+// })
