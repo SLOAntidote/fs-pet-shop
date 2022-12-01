@@ -38,6 +38,15 @@ if(subcommand === "read"){
         return writeFile("./pets.json", JSON.stringify(pets));
 
     });
+} else if(subcommand === "destroy"){
+    const remIndex = process.argv[3];
+    readFile("./pets.json", "utf-8").then(text => {
+        const pets = JSON.parse(text);
+        pets.splice(remIndex);
+        return writeFile("./pets.json", JSON.stringify(pets));
+
+    });
+
 }
 
 // $ node pets.js update 1 9 cat
